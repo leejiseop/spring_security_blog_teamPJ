@@ -33,7 +33,9 @@ public class CommentService {
 
         Comment comment = commentRepository.save(new Comment(post, user, commentRequestDto));
 
-        return new CommentResponseDto(comment);
+        int likeCount = 0;
+
+        return new CommentResponseDto(comment, likeCount);
     }
 
     // 댓글 수정
@@ -49,7 +51,7 @@ public class CommentService {
 
         comment.update(commentRequestDto);
 
-        return new CommentResponseDto(comment);
+        return new CommentResponseDto(comment, commentLikeRepository.countAllByCommentId(comment.getId()));
     }
 
     // 댓글 삭제
@@ -80,11 +82,11 @@ public class CommentService {
         );
 
         if(!checkCommentLike(commentId, user)) {
-            commentRepository.saveAndFlush(new CommentLike(user, comment));
-            return new MessageResponseDto("좋아오 완료", HttpStatus.OK.value());
+            commentLikeRepository.saveAndFlush(new CommentLike(user, comment));
+            return new MessageResponseDto("좋아요 완료", HttpStatus.OK.value());
         } else {
-            commentRepository.deleteByCommentIdAndUserId(commentId, user.getId());
-            return new MessageResponseDto("좋아요 취소", HttpStaus.OK.value());
+            commentLikeRepository.deleteByCommentIdAndUserId(commentId, user.getId());
+            return new MessageResponseDto("좋아요 취소", HttpStatus.OK.value());
         }
     }
 }

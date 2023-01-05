@@ -1,7 +1,6 @@
 package com.sparta.spring_security_blog_teampj.entity;
 
 import com.sparta.spring_security_blog_teampj.dto.CommentRequestDto;
-import com.sparta.spring_security_blog_teampj.dto.CommentResponseDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -32,7 +31,7 @@ public class Comment extends Timestamped{
     public Comment(Post post, User user, CommentRequestDto commentRequestDto) {
         this.post = post;
         this.user = user;
-        this.username = commentRequestDto.getUsername();
+        this.username = user.getUsername();
         this.comment = commentRequestDto.getComment();
     }
 
