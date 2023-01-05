@@ -21,13 +21,13 @@ public class CommentController {
     // 댓글 작성
     @PostMapping("/api/comments/{id}")
     public ResponseEntity<CommentResponseDto> createComment(@PathVariable Long id, @RequestBody CommentRequestDto commentRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return ResponseEntity.ok(commentService.createComment(id,commentRequestDto, userDetails.getUser()));
+        return ResponseEntity.ok().body(commentService.createComment(id,commentRequestDto, userDetails.getUser()));
     }
 
     // 댓글 수정
     @PutMapping("api/comments/{id}/{commentsId}")
     public ResponseEntity<CommentResponseDto> modifyComment(@PathVariable Long id, @PathVariable Long commentsId, @RequestBody CommentRequestDto commentRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return ResponseEntity.ok(commentService.modifyComment(id, commentsId, commentRequestDto, userDetails.getUser()));
+        return ResponseEntity.ok().body(commentService.modifyComment(id, commentsId, commentRequestDto, userDetails.getUser()));
     }
 
     // 댓글 삭제
@@ -38,7 +38,7 @@ public class CommentController {
     }
 
     // 댓글 좋아요
-    @PatchMapping("/api/comments/{commentId}/like")
+    @PostMapping("/api/comments/like/{commentId}")
     public ResponseEntity<MessageResponseDto> commentLike(@PathVariable Long commentId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseEntity.ok(commentService.commentLike(commentId, userDetails.getUser()));
     }

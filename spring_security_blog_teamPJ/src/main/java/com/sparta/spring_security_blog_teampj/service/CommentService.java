@@ -3,10 +3,8 @@ package com.sparta.spring_security_blog_teampj.service;
 import com.sparta.spring_security_blog_teampj.dto.CommentRequestDto;
 import com.sparta.spring_security_blog_teampj.dto.CommentResponseDto;
 import com.sparta.spring_security_blog_teampj.dto.MessageResponseDto;
-import com.sparta.spring_security_blog_teampj.entity.Comment;
-import com.sparta.spring_security_blog_teampj.entity.CommentLike;
-import com.sparta.spring_security_blog_teampj.entity.Post;
-import com.sparta.spring_security_blog_teampj.entity.User;
+import com.sparta.spring_security_blog_teampj.entity.*;
+import com.sparta.spring_security_blog_teampj.exception.CustomException;
 import com.sparta.spring_security_blog_teampj.repository.CommentLikeRepository;
 import com.sparta.spring_security_blog_teampj.repository.CommentRepository;
 import com.sparta.spring_security_blog_teampj.repository.PostRepository;
@@ -14,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.sparta.spring_security_blog_teampj.exception.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +28,7 @@ public class CommentService {
     @Transactional
     public CommentResponseDto createComment(Long id, CommentRequestDto commentRequestDto, User user) {
         Post post = postRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 게시물입니다.")
+                () -> new CustomException(NOT_FOUND_POST)
         );
 
         Comment comment = commentRepository.save(new Comment(post, user, commentRequestDto));
@@ -42,13 +42,21 @@ public class CommentService {
     @Transactional
     public CommentResponseDto modifyComment(Long id, Long commentsId, CommentRequestDto commentRequestDto, User user) {
         Post post = postRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 게시물입니다.")
+                () -> new CustomException(NOT_FOUND_POST)
         );
 
-        Comment comment = commentRepository.findById(commentsId).orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 댓글입니다.")
-        );
+        Comment comment;
 
+        if (user.getRole().equals(UserRoleEnum.ADMIN)) {
+            comment = commentRepository.findById(commentsId).orElseThrow(
+                    () -> new CustomException(NOT_FOUND_COMMENT)
+            );
+
+        } else {
+            comment = commentRepository.findByIdAndUserId(commentsId, user.getId()).orElseThrow(
+                    () -> new CustomException(AUTHORIZATION)
+            );
+        }
         comment.update(commentRequestDto);
 
         return new CommentResponseDto(comment, commentLikeRepository.countAllByCommentId(comment.getId()));
@@ -58,12 +66,21 @@ public class CommentService {
     @Transactional
     public CommentResponseDto deleteComment(Long id, Long commentsId, User user) {
         Post post = postRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 게시물입니다.")
+                () -> new CustomException(NOT_FOUND_POST)
         );
 
-        Comment comment = commentRepository.findById(commentsId).orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 댓글입니다.")
-        );
+        Comment comment;
+
+        if (user.getRole().equals(UserRoleEnum.ADMIN)) {
+            comment = commentRepository.findById(commentsId).orElseThrow(
+                    () -> new CustomException(NOT_FOUND_COMMENT)
+            );
+
+        } else {
+            comment = commentRepository.findByIdAndUserId(commentsId, user.getId()).orElseThrow(
+                    () -> new CustomException(AUTHORIZATION)
+            );
+        }
 
         commentRepository.deleteById(commentsId);
 
@@ -76,13 +93,14 @@ public class CommentService {
     }
 
     // 댓글 좋아요
+    @Transactional
     public MessageResponseDto commentLike(Long commentId, User user) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 댓글입니다.")
+                () -> new CustomException(NOT_FOUND_COMMENT)
         );
 
         if(!checkCommentLike(commentId, user)) {
-            commentLikeRepository.saveAndFlush(new CommentLike(user, comment));
+            commentLikeRepository.save(new CommentLike(user, comment));
             return new MessageResponseDto("좋아요 완료", HttpStatus.OK.value());
         } else {
             commentLikeRepository.deleteByCommentIdAndUserId(commentId, user.getId());
