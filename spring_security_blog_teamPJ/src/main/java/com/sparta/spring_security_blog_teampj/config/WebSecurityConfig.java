@@ -50,7 +50,7 @@ public class WebSecurityConfig {
 
         http.exceptionHandling().accessDeniedPage("/api/user/forbidden");
 
-
+        http.formLogin();
         return http.build();
     }
 
