@@ -5,17 +5,24 @@ import com.sparta.spring_security_blog_teampj.dto.CommentResponseDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 
 @Getter
 @Entity
 @NoArgsConstructor
 public class Comment extends Timestamped{
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+
+    @ManyToOne
+    @JoinColumn(name = "post_id", nullable = false)
     private Post post;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     private String username;

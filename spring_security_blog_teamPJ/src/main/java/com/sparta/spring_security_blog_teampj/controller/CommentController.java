@@ -6,7 +6,9 @@ import com.sparta.spring_security_blog_teampj.dto.MessageResponseDto;
 import com.sparta.spring_security_blog_teampj.security.UserDetailsImpl;
 import com.sparta.spring_security_blog_teampj.service.CommentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,20 +19,25 @@ public class CommentController {
 
     // 댓글 작성
     @PostMapping("/api/comments/{id}")
-    public CommentResponseDto createComment(@PathVariable Long id, @RequestBody CommentRequestDto commentRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return commentService.createComment(id,commentRequestDto, userDetails.getUser());
+    public ResponseEntity<CommentResponseDto> createComment(@PathVariable Long id, @RequestBody CommentRequestDto commentRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.ok(commentService.createComment(id,commentRequestDto, userDetails.getUser()));
     }
 
     // 댓글 수정
     @PutMapping("api/comments/{id}/{commentsId}")
-    public CommentResponseDto modifyComment(@PathVariable Long id, @PathVariable Long commentsId, @RequestBody CommentRequestDto commentRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return commentService.modifyComment(id, commentsId, commentRequestDto, userDetails.getUser());
+    public ResponseEntity<CommentResponseDto> modifyComment(@PathVariable Long id, @PathVariable Long commentsId, @RequestBody CommentRequestDto commentRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.ok(commentService.modifyComment(id, commentsId, commentRequestDto, userDetails.getUser()));
     }
 
     // 댓글 삭제
-    @DeleteMapping("/api/comments/{id}/{commentsId")
-    public MessageResponseDto deleteComment(@PathVariable Long id, @PathVariable Long commentsId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return commentService.deleteComment(id, commentsId, userDetails.getUser());
+    @DeleteMapping("/api/comments/{id}/{commentsId}")
+    public ResponseEntity<MessageResponseDto> deleteComment(@PathVariable Long id, @PathVariable Long commentsId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.ok(commentService.deleteComment(id, commentsId, userDetails.getUser()));
     }
 
+    // 댓글 좋아요
+    @PatchMapping("/api/comments/{commentId}/like")
+    public ResponseEntity<MessageResponseDto> commentLike(@PathVariable Long commentId, @AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseEntity.ok(commentService.commentLike(commentId, userDetails.getUser()));
+    }
 }

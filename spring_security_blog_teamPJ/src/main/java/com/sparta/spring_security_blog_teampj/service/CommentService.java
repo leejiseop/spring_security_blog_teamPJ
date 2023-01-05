@@ -4,12 +4,14 @@ import com.sparta.spring_security_blog_teampj.dto.CommentRequestDto;
 import com.sparta.spring_security_blog_teampj.dto.CommentResponseDto;
 import com.sparta.spring_security_blog_teampj.dto.MessageResponseDto;
 import com.sparta.spring_security_blog_teampj.entity.Comment;
+import com.sparta.spring_security_blog_teampj.entity.CommentLike;
 import com.sparta.spring_security_blog_teampj.entity.Post;
 import com.sparta.spring_security_blog_teampj.entity.User;
 import com.sparta.spring_security_blog_teampj.repository.CommentLikeRepository;
 import com.sparta.spring_security_blog_teampj.repository.CommentRepository;
 import com.sparta.spring_security_blog_teampj.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,5 +69,22 @@ public class CommentService {
 
     }
 
+    public boolean checkCommentLike(Long commentId, User user) {
+        return commentLikeRepository.existsByCommentIdAndUserId(commentId, user.getId());
+    }
+
     // 댓글 좋아요
+    public MessageResponseDto commentLike(Long commentId, User user) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(
+                () -> new IllegalArgumentException("존재하지 않는 댓글입니다.")
+        );
+
+        if(!checkCommentLike(commentId, user)) {
+            commentRepository.saveAndFlush(new CommentLike(user, comment));
+            return new MessageResponseDto("좋아오 완료", HttpStatus.OK.value());
+        } else {
+            commentRepository.deleteByCommentIdAndUserId(commentId, user.getId());
+            return new MessageResponseDto("좋아요 취소", HttpStaus.OK.value());
+        }
+    }
 }
