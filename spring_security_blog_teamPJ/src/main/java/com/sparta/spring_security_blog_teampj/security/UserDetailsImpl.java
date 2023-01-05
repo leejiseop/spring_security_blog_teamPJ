@@ -18,8 +18,6 @@ public class UserDetailsImpl implements UserDetails {
     private final User user;
     private final String username;
 
-
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         UserRoleEnum role = user.getRole();
