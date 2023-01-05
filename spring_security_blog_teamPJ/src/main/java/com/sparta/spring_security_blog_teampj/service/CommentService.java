@@ -87,7 +87,7 @@ public class CommentService {
         return new CommentResponseDto(comment,commentLikeRepository.countAllByCommentId(comment.getId()));
 
     }
-
+    @Transactional
     public boolean checkCommentLike(Long commentId, User user) {
         return commentLikeRepository.existsByCommentIdAndUserId(commentId, user.getId());
     }

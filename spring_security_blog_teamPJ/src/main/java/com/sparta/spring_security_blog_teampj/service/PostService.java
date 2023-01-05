@@ -50,7 +50,7 @@ public class PostService {
         return postResponseDtos;
     }
 
-
+    @Transactional
     public boolean checkPostLike(Long postId, User user){
         return postLikeRepository.existsByPostIdAndUserId(postId, user.getId());
     }
@@ -67,7 +67,7 @@ public class PostService {
         }
         return new PostResponseDto(post, commentList, (checkPostLike(post.getId(), user)));
     }
-
+    @Transactional
     public PostResponseDto updatePost(Long id, PostRequestDto postRequestDto, User user) {
         // 조건 - 유저인가 ? 관리자인가?
         Post post;
