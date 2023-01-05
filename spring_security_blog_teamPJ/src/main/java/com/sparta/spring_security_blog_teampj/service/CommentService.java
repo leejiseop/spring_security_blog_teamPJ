@@ -56,7 +56,7 @@ public class CommentService {
 
     // 댓글 삭제
     @Transactional
-    public MessageResponseDto deleteComment(Long id, Long commentsId, User user) {
+    public CommentResponseDto deleteComment(Long id, Long commentsId, User user) {
         Post post = postRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 게시물입니다.")
         );
@@ -67,7 +67,7 @@ public class CommentService {
 
         commentRepository.deleteById(commentsId);
 
-        return new MessageResponseDto();
+        return new CommentResponseDto(comment,commentLikeRepository.countAllByCommentId(comment.getId()));
 
     }
 
