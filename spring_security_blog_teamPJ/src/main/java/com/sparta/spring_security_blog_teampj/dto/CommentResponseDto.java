@@ -1,9 +1,12 @@
 package com.sparta.spring_security_blog_teampj.dto;
 
 import com.sparta.spring_security_blog_teampj.entity.Comment;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+
+@Getter
 public class CommentResponseDto {
 
     private Long id;
