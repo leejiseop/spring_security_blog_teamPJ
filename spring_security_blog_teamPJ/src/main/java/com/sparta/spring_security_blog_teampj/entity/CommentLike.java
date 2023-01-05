@@ -15,11 +15,11 @@ public class CommentLike {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_Id")
+    @JoinColumn(name = "user_Id", nullable = false)
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "comment_id")
+    @JoinColumn(name = "comment_id", nullable = false)
     private Comment comment;
 
     public CommentLike(User user, Comment comment) {
