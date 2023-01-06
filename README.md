@@ -34,7 +34,7 @@ Spring 심화 팀프로젝트입니다.
 - H2 Database
 
 ### 개발 기간
-- 22/12/30 ~ 22/01/05 (7일)
+- 22/12/30 ~ 23/01/05 (7일)
 
 ### API
 ![1](https://user-images.githubusercontent.com/42302401/210954096-9f1a2fdf-e67c-4a7a-8075-3d8be8f2b564.png)
