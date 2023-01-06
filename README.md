@@ -1,4 +1,4 @@
-# Spring security 기능이 추가된 게시판 기능 구현
+# Spring Security 기능이 추가된 게시판 기능 구현
 스파르타코딩클럽 내일배움캠프 4기  
 Spring 심화 팀프로젝트입니다.
 
@@ -26,12 +26,12 @@ Spring 심화 팀프로젝트입니다.
 
 ## 3. 정보
 ### 개발환경
-- Spring Boot (2.7.6)
-- Spring
-- Spring Security (JWT)
-- JPA
 - JAVA(JDK11)
-- H2
+- Spring
+- Spring Boot (2.7.6)
+- Spring Security (JWT)
+- Spring Data JPA
+- H2 Database
 
 ### 개발 기간
 - 22/12/30 ~ 22/01/05 (7일)
